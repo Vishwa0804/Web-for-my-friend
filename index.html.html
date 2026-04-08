@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY FUTURE </title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0F;
+    --surface: #13131A;
+    --card: #1A1A25;
+    --border: rgba(255,255,255,0.06);
+    --accent: #7C6FFF;
+    --accent2: #FF6F91;
+    --accent3: #6FFFE0;
+    --text: #F0EFF8;
+    --muted: #6E6D85;
+    --done-bg: rgba(124,111,255,0.08);
+    --done-border: rgba(124,111,255,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; }
+  .orb2 { width: 300px; height: 300px; background: var(--accent2); bottom: 100px; left: -80px; }
+  .orb3 { width: 200px; height: 200px; background: var(--accent3); top: 50%; left: 50%; }
+
+  .container { max-width: 600px; margin: 0 auto; padding: 2rem 1.2rem 4rem; position: relative; z-index: 1; }
+
+  /* ─── HEADER ─── */
+  header { text-align: center; padding: 3rem 0 2.5rem; }
+
+  .avatar-ring {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.2rem;
+    background: linear-gradient(135deg, rgba(124,111,255,0.15), rgba(255,111,145,0.1));
+    position: relative;
+  }
+  .avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(124,111,255,0.2);
+  }
+  .avatar-initials {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    background: linear-gradient(135deg, #fff 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  /* ─── DATE + GREETING ─── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 1.2rem;
+  }
+  .top-bar .greeting { font-size: 13px; color: var(--muted); }
+  .top-bar .date-val { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  /* ─── PROGRESS ─── */
+  .progress-section { margin-bottom: 1.5rem; }
+  .prog-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .prog-label { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .prog-count { font-size: 13px; font-weight: 500; color: var(--accent); }
+  .prog-track {
+    height: 4px;
+    background: var(--surface);
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .prog-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .sec-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 1.8rem 0 0.7rem 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .sec-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-morning { background: #FFBB5C; }
+  .dot-evening { background: #6FFFE0; }
+  .dot-night { background: var(--accent); }
+
+  /* ─── TASK CARD ─── */
+  .task {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 16px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .task:hover { border-color: rgba(124,111,255,0.25); transform: translateX(2px); }
+  .task:active { transform: scale(0.99); }
+  .task.done {
+    background: var(--done-bg);
+    border-color: var(--done-border);
+  }
+
+  .check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    background: transparent;
+  }
+  .task.done .check {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+  }
+  .check svg { display: none; }
+  .task.done .check svg { display: block; }
+
+  .task-body { flex: 1; min-width: 0; }
+  .task-time {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 2px;
+    font-weight: 400;
+  }
+  .task.done .task-time { color: rgba(124,111,255,0.6); }
+  .task-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .task.done .task-name {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(124,111,255,0.5);
+  }
+
+  /* ─── STREAK ─── */
+  .streak-section {
+    margin-top: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem;
+  }
+  .streak-title {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .streak-days { display: flex; gap: 6px; justify-content: space-between; }
+  .s-day {
+    flex: 1;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    gap: 3px;
+  }
+  .s-day.today { border-color: rgba(124,111,255,0.4); color: var(--accent); }
+  .s-day.completed { background: rgba(124,111,255,0.12); border-color: rgba(124,111,255,0.35); }
+  .s-day .s-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); }
+  .s-day.completed .s-dot { background: var(--accent); }
+  .s-day.today .s-dot { background: var(--accent2); }
+
+  /* ─── COMPLETE MSG ─── */
+  .complete-msg {
+    display: none;
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background: rgba(124,111,255,0.07);
+    border: 1px solid rgba(124,111,255,0.2);
+    border-radius: 14px;
+  }
+  .complete-msg.show { display: block; }
+  .complete-msg p { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; }
+  .complete-msg small { font-size: 12px; color: var(--muted); }
+
+  /* ─── RESET ─── */
+  .reset-btn {
+    display: block;
+    margin: 1.5rem auto 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 8px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .reset-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.5;
+    letter-spacing: 0.06em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .task { animation: fadeUp 0.4s ease both; }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="glow-orb orb1"></div>
+<div class="glow-orb orb2"></div>
+<div class="glow-orb orb3"></div>
+
+<div class="container">
+
+  <header>
+    <div class="avatar-ring">
+      <span class="avatar-initials">G</span>
+    </div>
+    <h1 class="hero-name">GOVINDRAJ</h1>
+    <p class="hero-sub">CONSISTENCY IS THE KEY FOR SUCCESS</p>
+  </header>
+
+  <div class="top-bar">
+    <span class="greeting" id="greeting">Good morning!</span>
+    <span class="date-val" id="today-date"></span>
+  </div>
+
+  <div class="progress-section">
+    <div class="prog-header">
+      <span class="prog-label">Today's progress</span>
+      <span class="prog-count" id="prog-count">0 / 15</span>
+    </div>
+    <div class="prog-track">
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div id="task-list"></div>
+
+  <div class="complete-msg" id="done-msg">
+    <p>You crushed it, Govindraj!</p>
+    <small>All tasks done — legend behaviour.</small>
+  </div>
+
+  <div class="streak-section">
+    <p class="streak-title">This week</p>
+    <div class="streak-days" id="streak-days"></div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">Reset for today</button>
+
+  <footer>Made with love &nbsp;•&nbsp; Govindraj's personal tracker</footer>
+
+</div>
+
+<script>
+const tasks = [
+  { id:'t1',  sec:'morning', time:'6:00',           name:'Wake up' },
+  { id:'t2',  sec:null,      time:'6:00 – 6:30',    name:'Exercise (30 min)' },
+  { id:'t3',  sec:null,      time:'6:30 – 7:00',    name:'Self learning' },
+  { id:'t4',  sec:null,      time:'7:00 – 7:30',    name:'bothing' },
+  { id:'t5',  sec:null,      time:'7:30 – 8:00',    name:'Breakfast' },
+  { id:'t5',  sec:null,      time:'8:45 – 4:15',    name:'College' },
+  { id:'t7',  sec:null,      time:'4:30 – 5:00',    name:'Snacks + rest' },
+  { id:'t8',  sec:null,      time:'5:00 – 6:00',    name:'Mobile / chill time' },
+  { id:'t9',  sec:null,      time:'6:00 – 7:30',    name:'Learning — main skill building' },
+  { id:'t10', sec:'night',   time:'7:30 – 8:10',    name:'Dinner + relax' },
+  { id:'t11', sec:null,      time:'8:10 – 8:45',    name:'Mobile / interest (controlled)' },
+  { id:'t12', sec:null,      time:'8:45 – 9:45',    name:'Study time — college subjects' },
+  { id:'t13', sec:null,      time:'9:45 – 10:00',   name:'Fun time (short break)' },
+  { id:'t14', sec:null,      time:'10:00 – 10:30',  name:'Self-learning / future work' },
+  { id:'t15', sec:null,      time:'10:30',           name:'Sleep — 7.5 hours' },
+];
+
+const sections = {
+  morning: { label:'Morning — Focus Start', dot:'dot-morning' },
+  evening: { label:'Evening — Recharge',    dot:'dot-evening' },
+  night:   { label:'Night — Wind Down',     dot:'dot-night'   },
+};
+
+const todayKey = () => 'govind_done_' + new Date().toDateString();
+const weekKey  = 'govind_streak';
+
+let done = JSON.parse(localStorage.getItem(todayKey()) || '[]');
+
+function save() { localStorage.setItem(todayKey(), JSON.stringify(done)); }
+
+function updateProgress() {
+  const n = done.length, total = tasks.length;
+  document.getElementById('prog-count').textContent = n + ' / ' + total;
+  document.getElementById('prog-fill').style.width = Math.round(n / total * 100) + '%';
+  const msg = document.getElementById('done-msg');
+  if (n === total) { msg.classList.add('show'); updateStreak(); }
+  else msg.classList.remove('show');
+}
+
+function toggle(id) {
+  const idx = done.indexOf(id);
+  if (idx > -1) done.splice(idx, 1); else done.push(id);
+  save();
+  const card = document.querySelector('[data-id="' + id + '"]');
+  card.classList.toggle('done', done.includes(id));
+  updateProgress();
+}
+
+function buildList() {
+  const list = document.getElementById('task-list');
+  list.innerHTML = '';
+  tasks.forEach((t, i) => {
+    if (t.sec) {
+      const s = sections[t.sec];
+      const lbl = document.createElement('div');
+      lbl.className = 'sec-label';
+      lbl.innerHTML = '<span class="sec-dot ' + s.dot + '"></span>' + s.label;
+      list.appendChild(lbl);
+    }
+    const card = document.createElement('div');
+    card.className = 'task' + (done.includes(t.id) ? ' done' : '');
+    card.dataset.id = t.id;
+    card.style.animationDelay = (i * 30) + 'ms';
+    card.onclick = () => toggle(t.id);
+    card.innerHTML = `<div class="check"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><polyline points="1.5,4.5 4.5,7.5 10.5,1.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="task-body"><div class="task-time">${t.time}</div><div class="task-name">${t.name}</div></div>`;
+    list.appendChild(card);
+  });
+}
+
+function updateStreak() {
+  const all = JSON.parse(localStorage.getItem(weekKey) || '[]');
+  const td = new Date().toDateString();
+  if (!all.includes(td)) { all.push(td); localStorage.setItem(weekKey, JSON.stringify(all)); }
+}
+
+function buildWeekStreak() {
+  const bar = document.getElementById('streak-days');
+  bar.innerHTML = '';
+  const dayNames = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const today = new Date();
+  const all = JSON.parse(localStorage.getItem(weekKey) || '[]');
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const div = document.createElement('div');
+    div.className = 's-day';
+    if (i === 0) div.classList.add('today');
+    if (all.includes(d.toDateString())) div.classList.add('completed');
+    div.innerHTML = '<span class="s-dot"></span><span>' + dayNames[d.getDay()] + '</span>';
+    bar.appendChild(div);
+  }
+}
+
+function resetAll() {
+  done = []; save();
+  document.querySelectorAll('.task').forEach(c => c.classList.remove('done'));
+  updateProgress();
+}
+
+function setGreeting() {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Good morning, Govindraj!' : h < 17 ? 'Good afternoon!' : 'Good evening!';
+  document.getElementById('greeting').textContent = g;
+  const d = new Date();
+  document.getElementById('today-date').textContent = d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+
+setGreeting();
+buildList();
+updateProgress();
+buildWeekStreak();
+</script>
+</body>
+</html>
